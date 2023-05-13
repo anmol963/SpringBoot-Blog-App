@@ -1,6 +1,5 @@
 package com.springboot.blog.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -27,7 +26,7 @@ public class PostServiceImpl implements PostService{
 	private PostRepository postRepository;
 	
 	@Override
-	public PostDto createPost(PostDto postDto) throws PostAlreadyExistsException{
+	public PostDto createPost(PostDto postDto){
 		
 		// Check if a post with the same title already exists
 		if(postRepository.existsByTitle(postDto.getTitle())) {
@@ -72,7 +71,7 @@ public class PostServiceImpl implements PostService{
 	}
 	
 	@Override
-	public PostDto getPostById(Long id) throws ResourceNotFoundException{
+	public PostDto getPostById(Long id){
 		
 		// Post post = postRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Post", "id", id));
 		
@@ -86,7 +85,7 @@ public class PostServiceImpl implements PostService{
 	}
 	
 	@Override
-	public PostDto updatePost(PostDto postDto, long id) throws PostAlreadyExistsException, ResourceNotFoundException{
+	public PostDto updatePost(PostDto postDto, long id){
 		Optional<Post> optionalPost = postRepository.findById(id);
 		if(optionalPost.isEmpty()) {
 			throw new ResourceNotFoundException("Post", "id", id);
@@ -107,7 +106,7 @@ public class PostServiceImpl implements PostService{
 	}
 	
 	@Override
-	public void deletePost(long id) throws ResourceNotFoundException{
+	public void deletePost(long id){
 		Optional<Post> optionalPost = postRepository.findById(id);
 		if(optionalPost.isEmpty()) {
 			throw new ResourceNotFoundException("Post", "id", id);
