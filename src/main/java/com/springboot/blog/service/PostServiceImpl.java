@@ -6,9 +6,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.springboot.blog.dto.PostDto;
+import com.springboot.blog.dto.PostResponse;
 import com.springboot.blog.entity.Post;
 import com.springboot.blog.exception.PostAlreadyExistsException;
 import com.springboot.blog.exception.ResourceNotFoundException;
@@ -39,13 +44,31 @@ public class PostServiceImpl implements PostService{
 	}
 
 	@Override
-	public List<PostDto> getAllPosts() {
-		List<Post> list = postRepository.findAll();
-		List<PostDto> listDto = new ArrayList<>();
+	public PostResponse getAllPosts(int pageNo, int pageSize, String sortBy,String sortDir) {
 		
-		list.forEach(p->listDto.add(entityToDto(p)));
-		// List<PostDto> listDto = list.stream().map(post->entityToDto(post)).collect(Collectors.toList());
-		return listDto;
+		Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+																		: Sort.by(sortBy).descending();
+		
+		// create Pageable instance
+		Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+		
+		Page<Post> list = postRepository.findAll(pageable);
+		// get content from page object
+		List<Post> listPosts = list.getContent();
+		
+		/* List<PostDto> listDto = new ArrayList<>();
+		list.forEach(p->listDto.add(entityToDto(p))); */
+		List<PostDto> listPostDto = listPosts.stream().map(post->entityToDto(post)).collect(Collectors.toList());
+		
+		PostResponse postResponse = new PostResponse();
+		postResponse.setContent(listPostDto);
+		postResponse.setPageNo(list.getNumber());
+		postResponse.setPageSize(list.getSize());
+		postResponse.setTotalElements(list.getTotalElements());
+		postResponse.setTotalPages(list.getTotalPages());
+		postResponse.setLast(list.isLast());
+		
+		return postResponse;
 	}
 	
 	@Override
