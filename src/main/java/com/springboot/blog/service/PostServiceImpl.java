@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,6 +25,9 @@ public class PostServiceImpl implements PostService{
 
 	@Autowired
 	private PostRepository postRepository;
+	
+	@Autowired
+	private ModelMapper mapper;
 	
 	@Override
 	public PostDto createPost(PostDto postDto){
@@ -116,20 +120,24 @@ public class PostServiceImpl implements PostService{
 	
 	// mapping entity to DTO
 	private PostDto entityToDto(Post post) {
-		PostDto postResponse = new PostDto();
+		PostDto postDto = mapper.map(post, PostDto.class);
+		
+		/* PostDto postResponse = new PostDto();
 		postResponse.setId(post.getId());
 		postResponse.setTitle(post.getTitle());
 		postResponse.setDescription(post.getDescription());
-		postResponse.setContent(post.getContent());
-		return postResponse;
+		postResponse.setContent(post.getContent()); */
+		return postDto;
 	}
 	
 	// mapping DTO to entity
 	private Post dtoToEntity(PostDto postDto) {
-		Post post = new Post();
+		Post post = mapper.map(postDto, Post.class);
+		
+		/* Post post = new Post();
 		post.setTitle(postDto.getTitle());
 		post.setDescription(postDto.getDescription());
-		post.setContent(postDto.getContent());
+		post.setContent(postDto.getContent()); */
 		return post;
 	}
 }

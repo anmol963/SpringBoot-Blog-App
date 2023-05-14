@@ -1,4 +1,4 @@
-package com.springboot.blog.exceptioncontroller;
+package com.springboot.blog.exceptionhandler;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

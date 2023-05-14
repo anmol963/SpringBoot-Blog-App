@@ -3,6 +3,7 @@ package com.springboot.blog.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,8 @@ public class CommentServiceImpl implements CommentService{
 	@Autowired
 	private CommentRespository commentRepository;
 	@Autowired PostRepository postRepository;
+	@Autowired
+	private ModelMapper mapper;
 
 	@Override
 	public CommentDto createComment(long postId, CommentDto commentDto) throws ResourceNotFoundException{
@@ -93,19 +96,23 @@ public class CommentServiceImpl implements CommentService{
 	}
 
 	private CommentDto entityToDto(Comment comment) {
-		CommentDto commentDto = new CommentDto();
+		CommentDto commentDto = mapper.map(comment, CommentDto.class);
+		
+		/* CommentDto commentDto = new CommentDto();
 		commentDto.setId(comment.getId());
 		commentDto.setName(comment.getName());
 		commentDto.setEmail(comment.getEmail());
-		commentDto.setBody(comment.getBody());
+		commentDto.setBody(comment.getBody()); */
 		return commentDto;
 	}
 
 	private Comment dtoToEntity(CommentDto commentDto) {
-		Comment comment = new Comment();
+		Comment comment = mapper.map(commentDto, Comment.class);
+		
+		/* Comment comment = new Comment();
 		comment.setName(commentDto.getName());
 		comment.setEmail(commentDto.getEmail());
-		comment.setBody(commentDto.getBody());
+		comment.setBody(commentDto.getBody()); */
 		return comment;
 	}
 }
